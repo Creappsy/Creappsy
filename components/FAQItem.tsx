@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId, useCallback } from 'react';
 
 interface FAQItemProps {
   question: string;
@@ -15,13 +15,19 @@ const MinusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const panelId = useId();
+
+  const toggleOpen = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
 
   return (
-    <div className="border-b border-slate-700 py-6">
+    <div className="faq-item border-b border-slate-700 py-6">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         className="w-full flex justify-between items-center text-left"
         aria-expanded={isOpen}
+        aria-controls={panelId}
       >
         <span className="text-lg font-medium text-slate-200">{question}</span>
         <span className="text-cyan-400">
@@ -29,6 +35,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
         </span>
       </button>
       <div
+        id={panelId}
         className={`grid transition-all duration-300 ease-in-out ${
           isOpen ? 'grid-rows-[1fr] opacity-100 pt-4' : 'grid-rows-[0fr] opacity-0'
         }`}

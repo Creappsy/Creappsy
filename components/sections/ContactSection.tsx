@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Section from '../Section';
-import { CONTACT_EMAIL, WHATSAPP_NUMBER, WHATSAPP_URL } from '../../constants';
+import { CONTACT_EMAIL, WHATSAPP_NUMBER, WHATSAPP_URL, SERVICES } from '../../constants';
+import anime from 'animejs';
 
 const MailIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -14,9 +15,116 @@ const WhatsAppIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 
 const ContactSection: React.FC = () => {
+    const sectionRef = useRef<HTMLElement>(null);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        companyName: '',
+        email: '',
+        phone: '',
+        service: '',
+        budget: '',
+        message: '',
+    });
+    const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                anime({
+                    targets: section.querySelectorAll('.contact-title > *'),
+                    translateY: [40, 0],
+                    opacity: [0, 1],
+                    delay: anime.stagger(200),
+                    duration: 800,
+                    easing: 'easeOutExpo',
+                });
+                observer.unobserve(section);
+            }
+        }, { threshold: 0.2 });
+
+        observer.observe(section);
+        return () => { if (section) observer.unobserve(section); };
+    }, []);
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setErrors(prevErrors => {
+            if (prevErrors[name]) {
+                const newErrors = { ...prevErrors };
+                delete newErrors[name];
+                return newErrors;
+            }
+            return prevErrors;
+        });
+    }, []);
+
+    const handlePrivacyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setPrivacyPolicyAccepted(e.target.checked);
+        setErrors(prevErrors => {
+            if (prevErrors.privacyPolicy) {
+                const newErrors = { ...prevErrors };
+                delete newErrors.privacyPolicy;
+                return newErrors;
+            }
+            return prevErrors;
+        });
+    }, []);
+
+    const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const validate = () => {
+            const newErrors: { [key: string]: string } = {};
+            if (!formData.fullName.trim()) newErrors.fullName = 'El nombre completo es obligatorio.';
+            if (!formData.email.trim()) {
+                newErrors.email = 'El email es obligatorio.';
+            } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+                newErrors.email = 'El formato del email no es válido.';
+            }
+            if (!formData.service) newErrors.service = 'Por favor, selecciona un servicio.';
+            if (!formData.message.trim()) {
+                newErrors.message = 'Por favor, cuéntanos sobre tu proyecto.';
+            } else if (formData.message.trim().length < 10) {
+                newErrors.message = 'El mensaje debe tener al menos 10 caracteres.';
+            }
+            if (!privacyPolicyAccepted) {
+                newErrors.privacyPolicy = 'Debes aceptar la política de privacidad para continuar.';
+            }
+            return newErrors;
+        };
+
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        
+        if (Object.keys(validationErrors).length === 0) {
+            setIsSubmitting(true);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            setIsSubmitting(false);
+            setIsSubmitted(true);
+            setFormData({ fullName: '', companyName: '', email: '', phone: '', service: '', budget: '', message: '' });
+            setPrivacyPolicyAccepted(false);
+            setTimeout(() => setIsSubmitted(false), 5000);
+        }
+    }, [formData, privacyPolicyAccepted]);
+
+    const getInputClassName = (field: string) => {
+        const baseClass = "py-3 px-4 block w-full shadow-sm bg-slate-700 rounded-md transition-colors";
+        if (errors[field]) {
+            return `${baseClass} border-red-500 focus:ring-red-500 focus:border-red-500 border`;
+        }
+        return `${baseClass} border-slate-600 focus:ring-cyan-500 focus:border-cyan-500 border`;
+    }
+
     return (
-        <Section id="contact">
-            <div className="max-w-3xl mx-auto text-center">
+        <Section ref={sectionRef} id="contact">
+            <div className="max-w-3xl mx-auto text-center contact-title">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Hablemos de tu Proyecto</h2>
                 <p className="mt-4 text-lg text-slate-400">
                     ¿Listo para empezar? Elige tu método de contacto preferido o completa el formulario. Estamos aquí para ayudarte a convertir tu visión en realidad.
@@ -40,65 +148,157 @@ const ContactSection: React.FC = () => {
                 </a>
             </div>
 
-            <div className="mt-12 max-w-2xl mx-auto">
-                <form action="#" method="POST" className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
-                    <div>
-                        <label htmlFor="first-name" className="block text-sm font-medium text-slate-300">Nombre</label>
-                        <div className="mt-1">
+            <div className="mt-12 max-w-3xl mx-auto">
+                {isSubmitted ? (
+                    <div className="p-4 text-center bg-emerald-900/50 border border-emerald-700 text-emerald-300 rounded-md">
+                        <h3 className="font-semibold text-lg">¡Mensaje enviado con éxito!</h3>
+                        <p className="mt-1">Gracias por contactarnos. Nos pondremos en contacto contigo pronto.</p>
+                    </div>
+                ) : (
+                    <form noValidate onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+                        <div>
+                            <label htmlFor="fullName" className="block text-sm font-medium text-slate-300">Nombre Completo</label>
                             <input
                                 type="text"
-                                name="first-name"
-                                id="first-name"
-                                autoComplete="given-name"
-                                className="py-3 px-4 block w-full shadow-sm bg-slate-700 border-slate-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500"
+                                name="fullName"
+                                id="fullName"
+                                autoComplete="name"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                className={getInputClassName('fullName')}
+                                required
+                                aria-invalid={!!errors.fullName}
+                                aria-describedby="fullName-error"
                             />
+                            {errors.fullName && <p id="fullName-error" className="mt-1 text-sm text-red-400">{errors.fullName}</p>}
                         </div>
-                    </div>
-                    <div>
-                        <label htmlFor="last-name" className="block text-sm font-medium text-slate-300">Apellido</label>
-                        <div className="mt-1">
+                        <div>
+                            <label htmlFor="companyName" className="block text-sm font-medium text-slate-300">Nombre de la Empresa <span className="text-slate-500">(Opcional)</span></label>
                             <input
                                 type="text"
-                                name="last-name"
-                                id="last-name"
-                                autoComplete="family-name"
-                                className="py-3 px-4 block w-full shadow-sm bg-slate-700 border-slate-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500"
+                                name="companyName"
+                                id="companyName"
+                                autoComplete="organization"
+                                value={formData.companyName}
+                                onChange={handleChange}
+                                className={getInputClassName('companyName')}
                             />
                         </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="email" className="block text-sm font-medium text-slate-300">Email</label>
-                        <div className="mt-1">
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-slate-300">Email</label>
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
                                 autoComplete="email"
-                                className="py-3 px-4 block w-full shadow-sm bg-slate-700 border-slate-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className={getInputClassName('email')}
+                                required
+                                aria-invalid={!!errors.email}
+                                aria-describedby="email-error"
+                            />
+                            {errors.email && <p id="email-error" className="mt-1 text-sm text-red-400">{errors.email}</p>}
+                        </div>
+                        <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-slate-300">Teléfono <span className="text-slate-500">(Opcional)</span></label>
+                            <input
+                                type="tel"
+                                name="phone"
+                                id="phone"
+                                autoComplete="tel"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                className={getInputClassName('phone')}
                             />
                         </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="message" className="block text-sm font-medium text-slate-300">Mensaje</label>
-                        <div className="mt-1">
+                         <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                            <div>
+                                <label htmlFor="service" className="block text-sm font-medium text-slate-300">Servicio de Interés</label>
+                                <select
+                                    id="service"
+                                    name="service"
+                                    value={formData.service}
+                                    onChange={handleChange}
+                                    className={getInputClassName('service')}
+                                    required
+                                    aria-invalid={!!errors.service}
+                                    aria-describedby="service-error"
+                                >
+                                    <option value="" disabled>Selecciona un servicio</option>
+                                    {SERVICES.map(s => <option key={s.title} value={s.title}>{s.title}</option>)}
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                {errors.service && <p id="service-error" className="mt-1 text-sm text-red-400">{errors.service}</p>}
+                            </div>
+                            <div>
+                                <label htmlFor="budget" className="block text-sm font-medium text-slate-300">Presupuesto Estimado <span className="text-slate-500">(Opcional)</span></label>
+                                <select
+                                    id="budget"
+                                    name="budget"
+                                    value={formData.budget}
+                                    onChange={handleChange}
+                                    className={getInputClassName('budget')}
+                                >
+                                    <option value="">Selecciona un rango</option>
+                                    <option value="< $2,500 MXN">Menos de $2,500 MXN</option>
+                                    <option value="$2,500 - $5,000 MXN">$2,500 - $5,000 MXN</option>
+                                    <option value="$5,000 - $10,000 MXN">$5,000 - $10,000 MXN</option>
+                                    <option value="$10,000 - $20,000 MXN">$10,000 - $20,000 MXN</option>
+                                    <option value="> $20,000 MXN">Más de $20,000 MXN</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label htmlFor="message" className="block text-sm font-medium text-slate-300">Cuéntanos sobre tu proyecto</label>
                             <textarea
                                 id="message"
                                 name="message"
                                 rows={4}
-                                className="py-3 px-4 block w-full shadow-sm bg-slate-700 border-slate-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500"
-                                defaultValue={''}
+                                value={formData.message}
+                                onChange={handleChange}
+                                className={getInputClassName('message')}
+                                placeholder="Describe tus objetivos, público objetivo y cualquier otra información relevante."
+                                required
+                                aria-invalid={!!errors.message}
+                                aria-describedby="message-error"
                             />
+                            {errors.message && <p id="message-error" className="mt-1 text-sm text-red-400">{errors.message}</p>}
                         </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <button
-                            type="submit"
-                            className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500"
-                        >
-                            Enviar Mensaje
-                        </button>
-                    </div>
-                </form>
+                         <div className="sm:col-span-2">
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <input
+                                        id="privacyPolicy"
+                                        name="privacyPolicy"
+                                        type="checkbox"
+                                        checked={privacyPolicyAccepted}
+                                        onChange={handlePrivacyChange}
+                                        className={`h-4 w-4 mt-1 rounded bg-slate-600 border-slate-500 text-cyan-600 focus:ring-cyan-500 ${errors.privacyPolicy ? 'border-red-500' : 'border-slate-500'}`}
+                                        required
+                                        aria-describedby="privacy-error"
+                                    />
+                                </div>
+                                <div className="ml-3 text-sm">
+                                    <label htmlFor="privacyPolicy" className="font-medium text-slate-300">
+                                        He leído y acepto la <a href="/aviso-de-privacidad" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</a>.
+                                    </label>
+                                    <p className="text-slate-500">Acepto que Creappsy almacene mis datos para responder a mi consulta.</p>
+                                </div>
+                            </div>
+                            {errors.privacyPolicy && <p id="privacy-error" className="mt-1 text-sm text-red-400">{errors.privacyPolicy}</p>}
+                        </div>
+                        <div className="sm:col-span-2">
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+                            </button>
+                        </div>
+                    </form>
+                )}
             </div>
         </Section>
     );

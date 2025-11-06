@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { generateMarketingCopy } from '../services/geminiService';
 
 const AICopyGenerator: React.FC = () => {
@@ -10,7 +10,7 @@ const AICopyGenerator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -24,7 +24,11 @@ const AICopyGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [productName, description, tone]);
+
+  const handleProductNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value), []);
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value), []);
+  const handleToneChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => setTone(e.target.value), []);
 
   return (
     <div className="mt-16 bg-slate-800/50 rounded-2xl p-8 border border-slate-700 relative overflow-hidden">
@@ -40,7 +44,7 @@ const AICopyGenerator: React.FC = () => {
                         type="text"
                         id="productName"
                         value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
+                        onChange={handleProductNameChange}
                         className="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
                         placeholder="Ej: Zapatillas 'Vortex'"
                         required
@@ -53,7 +57,7 @@ const AICopyGenerator: React.FC = () => {
                         id="description"
                         rows={3}
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={handleDescriptionChange}
                         className="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
                         placeholder="Ej: Calzado deportivo ultraligero para corredores urbanos."
                         required
@@ -65,7 +69,7 @@ const AICopyGenerator: React.FC = () => {
                     <select
                         id="tone"
                         value={tone}
-                        onChange={(e) => setTone(e.target.value)}
+                        onChange={handleToneChange}
                         className="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
                     >
                         <option>Creativo</option>

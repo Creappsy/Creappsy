@@ -8,8 +8,30 @@ import PortfolioSection from './components/sections/PortfolioSection';
 import BlogSection from './components/sections/BlogSection';
 import ContactSection from './components/sections/ContactSection';
 import WhatsAppButton from './components/WhatsAppButton';
+import Chatbot from './components/chatbot/Chatbot';
 import NosotrosPage from './pages/NosotrosPage';
 import PricingPage from './pages/PricingPage';
+import ServicesPage from './pages/ServicesPage';
+import PortfolioPage from './pages/PortfolioPage';
+import BlogPage from './pages/BlogPage';
+import ContactPage from './pages/ContactPage';
+import CareersPage from './pages/CareersPage';
+import PressPage from './pages/PressPage';
+import LegalPage from './pages/LegalPage';
+import DesarrolloWebPage from './pages/services/DesarrolloWebPage';
+import MarketingDigitalPage from './pages/services/MarketingDigitalPage';
+import DisenoUIUXPage from './pages/services/DisenoUIUXPage';
+import AnaliticaEstrategiaPage from './pages/services/AnaliticaEstrategiaPage';
+import CreacionDeContenidoPage from './pages/services/CreacionDeContenidoPage';
+import {
+    privacyPolicyContent,
+    termsOfServiceContent,
+    cookiePolicyContent,
+    contratoDesarrolloWebContent,
+    contratoMarketingContent,
+    contratoDisenoUIUXContent
+} from './pages/legalContent';
+
 
 const MainPage: React.FC = () => (
     <>
@@ -32,6 +54,57 @@ const App: React.FC = () => {
         if (pathname === '/precios') {
             return <PricingPage />;
         }
+        if (pathname === '/servicios') {
+            return <ServicesPage />;
+        }
+        if (pathname === '/servicios/desarrollo-web') {
+            return <DesarrolloWebPage />;
+        }
+        if (pathname === '/servicios/marketing-digital') {
+            return <MarketingDigitalPage />;
+        }
+        if (pathname === '/servicios/diseno-ui-ux') {
+            return <DisenoUIUXPage />;
+        }
+        if (pathname === '/servicios/analitica-estrategia') {
+            return <AnaliticaEstrategiaPage />;
+        }
+        if (pathname === '/servicios/creacion-de-contenido') {
+            return <CreacionDeContenidoPage />;
+        }
+        if (pathname === '/portafolio') {
+            return <PortfolioPage />;
+        }
+        if (pathname === '/blog') {
+            return <BlogPage />;
+        }
+        if (pathname === '/contacto') {
+            return <ContactPage />;
+        }
+        if (pathname === '/carreras') {
+            return <CareersPage />;
+        }
+        if (pathname === '/prensa') {
+            return <PressPage />;
+        }
+        if (pathname === '/aviso-de-privacidad') {
+            return <LegalPage title="Aviso de Privacidad" content={privacyPolicyContent} />;
+        }
+        if (pathname === '/terminos-de-servicio') {
+             return <LegalPage title="Términos de Servicio" content={termsOfServiceContent} />;
+        }
+        if (pathname === '/politica-de-cookies') {
+            return <LegalPage title="Política de Cookies" content={cookiePolicyContent} />;
+        }
+        if (pathname === '/contratos/desarrollo-web') {
+            return <LegalPage title="Modelo de Contrato: Desarrollo Web" content={contratoDesarrolloWebContent} />;
+        }
+        if (pathname === '/contratos/marketing-digital') {
+            return <LegalPage title="Modelo de Contrato: Marketing Digital" content={contratoMarketingContent} />;
+        }
+        if (pathname === '/contratos/diseno-ui-ux') {
+            return <LegalPage title="Modelo de Contrato: Diseño UI/UX" content={contratoDisenoUIUXContent} />;
+        }
         // Default to main page for "/" or any other path
         return <MainPage />;
     };
@@ -44,6 +117,7 @@ const App: React.FC = () => {
             </main>
             <Footer />
             <WhatsAppButton />
+            <Chatbot />
         </div>
     );
 };

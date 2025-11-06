@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import anime from 'animejs';
 import Section from '../Section';
 import { PRICING_TIERS } from '../../constants';
 import type { PriceTier } from '../../types';
@@ -16,9 +17,61 @@ const FireIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
+const StripeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>Stripe</title>
+        <path d="M22.844 18.068h-4.332c-.894 0-1.586-.224-2.074-.672-.488-.448-.732-1.08-.732-1.895 0-.816.244-1.448.732-1.895.488-.448 1.18-.672 2.074-.672h1.68v-2.91h-1.68c-.894 0-1.586-.224-2.074-.672-.488-.448-.732-1.08-.732-1.895 0-.816.244-1.448.732-1.895.488-.448 1.18-.672 2.074-.672h4.332v13.518zM8.053 4.55h4.332c.894 0 1.586.224 2.074.672.488.448.732 1.08.732 1.895 0 .816-.244-1.448-.732 1.895-.488.448-1.18.672-2.074.672h-1.68v2.91h1.68c.894 0 1.586.224 2.074.672.488.448.732 1.08.732 1.895 0 .816-.244-1.448-.732 1.895-.488.448-1.18.672-2.074.672H8.053V4.55zm-6.88 2.592h4.332v2.91H1.173v-2.91zm0 5.424h4.332v2.91H1.173v-2.91z"/>
+    </svg>
+);
+const PaypalIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>PayPal</title>
+        <path d="M7.856 5.348c.18-1.12.896-1.74 1.933-1.74h6.04c2.81 0 4.803 1.43 4.225 4.384-.582 2.954-2.732 4.384-5.32 4.384h-2.126l-.49 3.092-.124.81-.035.195c-.05.28-.112.548-.22.81h-.002c-.104.254-.253.48-.44.67-.184.184-.404.335-.65.446-.24.108-.502.164-.78.164H5.35l2.506-15.84zm.648 10.232l.26-1.64h1.834c3.08 0 4.1-1.657 4.542-4.04.44-2.383-1.04-3.52-3.15-3.52h-4.63L9.36 15.58h-.856z"/>
+    </svg>
+);
+const BitcoinIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <title>Bitcoin</title>
+      <path d="M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zM9.505 5.753c.12-.42.45-.66.8-.66h1.543c.48 0 .89.26.96.7.07.44-.19.68-.52.83l-1.35.5c1.42.34 2.29 1.16 2.29 2.51 0 1.25-.8 2.2-2.11 2.51v1.59a.62.62 0 0 1-.62.62h-.4a.62.62 0 0 1-.62-.62v-1.58c-.53-.12-1.08-.3-1.6-.53l-.33-.14a.55.55 0 0 1-.2-.8s.66-.27.69-.28c.31-.13.38-.3.38-.45 0-.21-.16-.38-.42-.5-.26-.11-.7-.28-.7-.28a.55.55 0 0 1-.23-.78l.05-.1zm.74 3.55c0 .28.23.44.57.56.34.12.73.27.73.27a.64.64 0 0 1 .18.82l-.02.04c-.34.72-1.16.6-1.48.5zm1.5-3.11c0 .28-.2.43-.5.53s-.66.25-.66.25a.6.6 0 0 1-.21.79l-.02.02c.4.15.82.3 1.22.46.22.09.43.18.63.29.2.1.4.22.57.36.18.14.33.3.46.47.13.18.23.38.3.59.08.2.12.42.12.64 0 .84-.46 1.48-1.24 1.76v1.1a.62.62 0 0 1-.62.62h-.4a.62.62 0 0 1-.62-.62v-1.07c-.42.06-.84.1-1.25.12h-.14c-.42-.02-.84-.06-1.25-.12v1.07a.62.62 0 0 1-.62.62h-.4a.62.62 0 0 1-.62-.62v-1.15c-.7-.3-1.21-.88-1.21-1.69 0-.58.32-1.07.78-1.37.28-.18.59-.34.9-.48l1.1-.52c.26-.12.42-.3.42-.55s-.2-.42-.48-.53c-.28-.11-.74-.3-.74-.3a.58.58 0 0 1-.24-.77l.04-.08c.3-.64 1.1-.6 1.4-.52z"/>
+    </svg>
+);
+const EthereumIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <title>Ethereum</title>
+      <path d="M11.944 17.97L4.58 13.62 11.943 24l7.365-10.38-7.364 4.35zM12.056 0L4.69 12.223l7.366 4.354 7.364-4.354L12.056 0z"/>
+    </svg>
+);
+
+
 const PricingSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          anime({
+            targets: '.pricing-tier',
+            translateY: [50, 0],
+            opacity: [0, 1],
+            delay: anime.stagger(200),
+            duration: 800,
+            easing: 'easeOutExpo',
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    observer.observe(section);
+    return () => { if (section) observer.unobserve(section) };
+  }, []);
+
   return (
-    <Section id="pricing">
+    <Section ref={sectionRef} id="pricing">
       <div className="text-center">
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Elige el Plan Perfecto para Ti</h2>
         <p className="mt-4 max-w-3xl mx-auto text-lg text-slate-400">
@@ -27,7 +80,7 @@ const PricingSection: React.FC = () => {
       </div>
       <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {PRICING_TIERS.map((tier: PriceTier) => (
-          <div key={tier.name} className={`rounded-2xl p-8 border flex flex-col h-full ${tier.recommended ? 'border-cyan-500 bg-slate-800/50 relative' : 'border-slate-700 bg-slate-900/50'}`}>
+          <div key={tier.name} className={`pricing-tier rounded-2xl p-8 border flex flex-col h-full ${tier.recommended ? 'border-cyan-500 bg-slate-800/50 relative' : 'border-slate-700 bg-slate-900/50'}`}>
             {tier.recommended && (
               <div className="absolute top-0 right-8 -translate-y-1/2 bg-cyan-500 text-slate-900 px-3 py-1 text-sm font-semibold rounded-full">Más Vendido</div>
             )}
@@ -49,11 +102,20 @@ const PricingSection: React.FC = () => {
                 </li>
               ))}
             </ul>
-            <a href="#contact" className={`mt-8 block w-full text-center py-3 px-6 rounded-lg font-semibold transition-transform transform hover:scale-105 ${tier.recommended ? 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white' : 'bg-slate-700 hover:bg-slate-600'}`}>
+            <a href="/contacto" className={`mt-8 block w-full text-center py-3 px-6 rounded-lg font-semibold transition-transform transform hover:scale-105 ${tier.recommended ? 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white' : 'bg-slate-700 hover:bg-slate-600'}`}>
               {tier.cta}
             </a>
           </div>
         ))}
+      </div>
+       <div className="mt-16 text-center">
+        <h3 className="text-lg font-semibold text-slate-300">Formas de Pago Aceptadas</h3>
+        <div className="mt-6 max-w-lg mx-auto flex justify-center items-center flex-wrap gap-x-8 gap-y-4 text-slate-400">
+            <StripeIcon className="h-5 transition-opacity hover:opacity-80 fill-current" />
+            <PaypalIcon className="h-6 transition-opacity hover:opacity-80 fill-[#0070BA]" />
+            <BitcoinIcon className="h-7 w-7 text-[#F7931A] transition-opacity hover:opacity-80 fill-current" />
+            <EthereumIcon className="h-7 w-7 text-[#627EEA] transition-opacity hover:opacity-80 fill-current" />
+        </div>
       </div>
     </Section>
   );

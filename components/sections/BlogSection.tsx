@@ -1,21 +1,98 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import anime from 'animejs';
 import Section from '../Section';
 import { BLOG_POSTS, BLOG_CATEGORIES } from '../../constants';
 import type { BlogPost, NavItem } from '../../types';
 
+const POSTS_PER_PAGE = 10;
+
 const BlogSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('Todos');
+  const [currentPage, setCurrentPage] = useState(1);
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleAnimatedRef = useRef(false);
 
-  const filteredPosts = activeCategory === 'Todos'
-    ? BLOG_POSTS.slice(0, 6) // Show latest 6 posts for "All"
-    : BLOG_POSTS.filter(post => post.category === activeCategory).slice(0, 6);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory]);
+
+  const allFilteredPosts = activeCategory === 'Todos'
+    ? BLOG_POSTS
+    : BLOG_POSTS.filter(post => post.category === activeCategory);
+  
+  const visiblePosts = allFilteredPosts.slice(0, currentPage * POSTS_PER_PAGE);
 
   const categories: readonly NavItem[] = [{ name: 'Todos', href: '#' }, ...BLOG_CATEGORIES];
+  
+  const handleCategoryClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const { category } = e.currentTarget.dataset;
+    if (category) {
+        setActiveCategory(category);
+    }
+  }, []);
+  
+  const handleLoadMore = useCallback(() => {
+    setCurrentPage(prev => prev + 1);
+  }, []);
+
+  // Animate the section title and cards on view
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const titleObserver = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !titleAnimatedRef.current) {
+            anime({
+                targets: section.querySelectorAll('.blog-title > *'),
+                translateY: [40, 0],
+                opacity: [0, 1],
+                duration: 800,
+                delay: anime.stagger(200),
+                easing: 'easeOutExpo',
+            });
+            titleAnimatedRef.current = true;
+            titleObserver.unobserve(section);
+        }
+    }, { threshold: 0.2 });
+
+    titleObserver.observe(section);
+    
+    return () => { titleObserver.disconnect(); };
+  }, []);
+
+
+  // Animate blog cards when they become visible or when the list changes
+  useEffect(() => {
+    const cardsToAnimate = document.querySelectorAll('.blog-card-main:not(.animated)');
+    
+    if (cardsToAnimate.length === 0) return;
+
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+          anime({
+            targets: entry.target,
+            translateY: [50, 0],
+            opacity: [0, 1],
+            duration: 600,
+            easing: 'easeOutExpo',
+          });
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    cardsToAnimate.forEach(card => cardObserver.observe(card));
+
+    return () => {
+      cardObserver.disconnect();
+    };
+  }, [visiblePosts]);
 
   return (
-    <Section id="blog" className="bg-slate-950/50">
-      <div className="text-center">
+    <Section ref={sectionRef} id="blog" className="bg-slate-950/50">
+      <div className="text-center blog-title">
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Desde Nuestro Blog</h2>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
           Mantente al día con las últimas tendencias en tecnología, marketing y crecimiento empresarial.
@@ -26,7 +103,8 @@ const BlogSection: React.FC = () => {
         {categories.map((category) => (
           <button
             key={category.name}
-            onClick={() => setActiveCategory(category.name)}
+            data-category={category.name}
+            onClick={handleCategoryClick}
             className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
               activeCategory === category.name
                 ? 'bg-cyan-500 text-slate-900'
@@ -39,8 +117,8 @@ const BlogSection: React.FC = () => {
       </div>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredPosts.map((post: BlogPost) => (
-          <div key={post.title} className="bg-slate-800/50 rounded-lg overflow-hidden border border-slate-700 flex flex-col">
+        {visiblePosts.map((post: BlogPost) => (
+          <div key={post.title} className="blog-card-main bg-slate-800/50 rounded-lg overflow-hidden border border-slate-700 flex flex-col transition-all duration-300 hover:scale-105 hover:border-cyan-400">
             <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-cover" />
             <div className="p-6 flex flex-col flex-grow">
               <p className="text-sm font-semibold text-cyan-400">{post.category}</p>
@@ -56,6 +134,17 @@ const BlogSection: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {visiblePosts.length < allFilteredPosts.length && (
+        <div className="mt-12 text-center">
+          <button 
+            onClick={handleLoadMore}
+            className="inline-block px-8 py-3 text-base font-medium text-center text-cyan-300 bg-slate-800/50 border border-slate-700 rounded-md hover:bg-slate-800 transition-colors duration-300"
+          >
+            Cargar más
+          </button>
+        </div>
+      )}
     </Section>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { NavItem, Service, Project, PriceTier, BlogPost, TeamMember, FAQ } from './types';
+import type { NavItem, Service, Project, PriceTier, BlogPost, TeamMember, FAQ, Testimonial } from './types';
 
 // Icons for services
 const CodeBracketIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -14,6 +14,10 @@ const PaintBrushIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 const ChartBarIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 1.5m1-1.5l1-1.5m0 0l-1 1.5m1-1.5l1-1.5M9 11.25l1.5 1.5m-1.5-1.5l-1.5 1.5" /></svg>
 );
+const DocumentTextIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+);
+
 
 export const CONTACT_EMAIL = 'info@creappsy.com';
 export const WHATSAPP_NUMBER = '+52 55 1219 3749'; // For display purposes
@@ -21,33 +25,10 @@ export const WHATSAPP_API_NUMBER = '525512193749'; // For the URL
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_API_NUMBER}`;
 
 export const BLOG_CATEGORIES: readonly NavItem[] = [
-    { name: 'SEO', href: '#blog' },
-    { name: 'Diseño UI/UX', href: '#blog' },
-    { name: 'Marketing', href: '#blog' },
-    { name: 'Desarrollo', href: '#blog' },
-];
-
-export const NAV_ITEMS: readonly NavItem[] = [
-  { name: 'Inicio', href: '/' },
-  { name: 'Sobre Nosotros', href: '/nosotros' },
-  { name: 'Servicios', href: '/#services' },
-  { name: 'Portafolio', href: '/#portfolio' },
-  { name: 'Precios', href: '/precios' },
-  {
-    name: 'Blog',
-    href: '/#blog',
-    children: BLOG_CATEGORIES.map(cat => ({ ...cat, href: `/#blog` })),
-  },
-  { name: 'Contacto', href: '/#contact' },
-  {
-    name: 'Más',
-    href: '#',
-    children: [
-      { name: 'Nuestra Historia', href: '/nosotros' },
-      { name: 'Carreras', href: '#' },
-      { name: 'Prensa', href: '#' },
-    ],
-  },
+    { name: 'SEO', href: '/blog' },
+    { name: 'Diseño UI/UX', href: '/blog' },
+    { name: 'Marketing', href: '/blog' },
+    { name: 'Desarrollo', href: '/blog' },
 ];
 
 export const SERVICES: readonly Service[] = [
@@ -55,23 +36,66 @@ export const SERVICES: readonly Service[] = [
       icon: <CodeBracketIcon className="h-6 w-6 text-cyan-400" />,
       title: 'Desarrollo Web a Medida',
       description: 'Creamos sitios web y aplicaciones web robustas, escalables y optimizadas para el rendimiento.',
+      href: '/servicios/desarrollo-web'
     },
     {
       icon: <MegaphoneIcon className="h-6 w-6 text-purple-400" />,
       title: 'Marketing Digital',
       description: 'Impulsamos tu presencia en línea con estrategias de SEO, SEM y redes sociales que generan resultados.',
+      href: '/servicios/marketing-digital'
     },
     {
       icon: <PaintBrushIcon className="h-6 w-6 text-rose-400" />,
       title: 'Diseño UI/UX',
       description: 'Diseñamos interfaces intuitivas y atractivas que ofrecen una experiencia de usuario excepcional.',
+      href: '/servicios/diseno-ui-ux'
     },
     {
       icon: <ChartBarIcon className="h-6 w-6 text-emerald-400" />,
       title: 'Analítica y Estrategia',
       description: 'Convertimos datos en decisiones. Analizamos el rendimiento para optimizar y alcanzar tus objetivos.',
+      href: '/servicios/analitica-estrategia'
+    },
+    {
+      icon: <DocumentTextIcon className="h-6 w-6 text-amber-400" />,
+      title: 'Creación de Contenido',
+      description: 'Creamos contenido que conecta. Desde blogs hasta guiones, producimos textos que cautivan a tu audiencia.',
+      href: '/servicios/creacion-de-contenido'
     },
 ];
+
+const SERVICE_CHILDREN: readonly NavItem[] = SERVICES.map(service => ({
+    name: service.title,
+    href: service.href,
+}));
+
+export const NAV_ITEMS: readonly NavItem[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Sobre Nosotros', href: '/nosotros' },
+  { 
+    name: 'Servicios',
+    href: '/servicios',
+    children: SERVICE_CHILDREN,
+  },
+  { name: 'Portafolio', href: '/portafolio' },
+  { name: 'Precios', href: '/precios' },
+  {
+    name: 'Blog',
+    href: '/blog',
+    children: BLOG_CATEGORIES,
+  },
+  { name: 'Contacto', href: '/contacto' },
+  {
+    name: 'Más',
+    href: '#',
+    children: [
+      { name: 'Nuestra Historia', href: '/nosotros' },
+      { name: 'Carreras', href: '/carreras' },
+      { name: 'Prensa', href: '/prensa' },
+    ],
+  },
+];
+
 
 export const PORTFOLIO_PROJECTS: readonly Project[] = [
     {
@@ -79,24 +103,28 @@ export const PORTFOLIO_PROJECTS: readonly Project[] = [
       title: 'E-commerce "Moda Urbana"',
       category: 'Desarrollo Web',
       description: 'Plataforma de comercio electrónico completa con pasarelas de pago y gestión de inventario.',
+      serviceCategory: 'Desarrollo Web a Medida',
     },
     {
       imageUrl: 'https://picsum.photos/seed/project2/600/400',
       title: 'Campaña "Lanza-Tech"',
       category: 'Marketing Digital',
       description: 'Estrategia de lanzamiento para una startup tecnológica, logrando un 200% de ROI en 3 meses.',
+      serviceCategory: 'Marketing Digital',
     },
     {
       imageUrl: 'https://picsum.photos/seed/project3/600/400',
       title: 'App Móvil "FitTrack"',
       category: 'Diseño UI/UX',
       description: 'Diseño de interfaz y experiencia de usuario para una aplicación de fitness y seguimiento de salud.',
+      serviceCategory: 'Diseño UI/UX',
     },
     {
       imageUrl: 'https://picsum.photos/seed/project4/600/400',
       title: 'Landing Page "Innovate Conference"',
       category: 'Diseño Web',
       description: 'Página de aterrizaje interactiva para una conferencia internacional de tecnología.',
+      serviceCategory: 'Desarrollo Web a Medida',
     },
 ];
 
@@ -194,6 +222,27 @@ export const BLOG_POSTS: readonly BlogPost[] = [
       date: '20 Jun, 2024',
       excerpt: 'Crear sitios web accesibles no solo es lo correcto, sino que también mejora el SEO y amplía tu audiencia.',
       imageUrl: 'https://picsum.photos/seed/blog6/400/200',
+    },
+];
+
+export const TESTIMONIALS: readonly Testimonial[] = [
+    {
+        quote: 'Creappsy transformó nuestra presencia online. Su equipo no solo entregó un sitio web increíble, sino que también nos guiaron en cada paso. ¡El ROI fue casi inmediato!',
+        name: 'Elena Rivera',
+        role: 'CEO de Moda Urbana',
+        imageUrl: 'https://i.pravatar.cc/150?u=elenarivera',
+    },
+    {
+        quote: 'El profesionalismo y la creatividad del equipo de Creappsy superaron todas nuestras expectativas. Entendieron nuestra visión a la perfección y la ejecutaron de manera impecable.',
+        name: 'Marcos Aguilar',
+        role: 'Fundador de Lanza-Tech',
+        imageUrl: 'https://i.pravatar.cc/150?u=marcosaguilar',
+    },
+    {
+        quote: 'Trabajar con Creappsy fue un cambio de juego para nosotros. Su enfoque en la experiencia del usuario mejoró nuestras tasas de conversión en un 40%. Altamente recomendados.',
+        name: 'Valeria Soto',
+        role: 'Directora de Producto en FitTrack',
+        imageUrl: 'https://i.pravatar.cc/150?u=valeriasoto',
     },
 ];
 

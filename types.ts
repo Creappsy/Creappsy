@@ -10,6 +10,7 @@ export interface Service {
   icon: ReactNode;
   title: string;
   description: string;
+  href: string;
 }
 
 export interface Project {
@@ -17,6 +18,7 @@ export interface Project {
   title: string;
   category: string;
   description:string;
+  serviceCategory?: string;
 }
 
 export interface PriceTier {
@@ -50,7 +52,19 @@ export interface TeamMember {
   };
 }
 
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+  imageUrl: string;
+}
+
 export interface FAQ {
   question: string;
   answer: string;
+}
+
+export interface ChatMessage {
+  text: string;
+  sender: 'user' | 'ai';
 }
