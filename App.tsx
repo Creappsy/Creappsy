@@ -18,6 +18,7 @@ import ContactPage from './pages/ContactPage';
 import CareersPage from './pages/CareersPage';
 import PressPage from './pages/PressPage';
 import LegalPage from './pages/LegalPage';
+import HablemosPage from './pages/HablemosPage';
 import DesarrolloWebPage from './pages/services/DesarrolloWebPage';
 import MarketingDigitalPage from './pages/services/MarketingDigitalPage';
 import DisenoUIUXPage from './pages/services/DisenoUIUXPage';
@@ -29,8 +30,11 @@ import {
     cookiePolicyContent,
     contratoDesarrolloWebContent,
     contratoMarketingContent,
-    contratoDisenoUIUXContent
+    contratoDisenoUIUXContent,
+    avisoLegalContent
 } from './pages/legalContent';
+import NuestraHistoriaPage from './pages/NuestraHistoriaPage';
+import CookieBanner from './components/CookieBanner';
 
 
 const MainPage: React.FC = () => (
@@ -50,6 +54,9 @@ const App: React.FC = () => {
         const pathname = window.location.pathname;
         if (pathname === '/nosotros') {
             return <NosotrosPage />;
+        }
+        if (pathname === '/nuestra-historia') {
+            return <NuestraHistoriaPage />;
         }
         if (pathname === '/precios') {
             return <PricingPage />;
@@ -81,6 +88,9 @@ const App: React.FC = () => {
         if (pathname === '/contacto') {
             return <ContactPage />;
         }
+        if (pathname === '/hablemos') {
+            return <HablemosPage />;
+        }
         if (pathname === '/carreras') {
             return <CareersPage />;
         }
@@ -95,6 +105,9 @@ const App: React.FC = () => {
         }
         if (pathname === '/politica-de-cookies') {
             return <LegalPage title="Política de Cookies" content={cookiePolicyContent} />;
+        }
+        if (pathname === '/aviso-legal') {
+            return <LegalPage title="Aviso Legal" content={avisoLegalContent} />;
         }
         if (pathname === '/contratos/desarrollo-web') {
             return <LegalPage title="Modelo de Contrato: Desarrollo Web" content={contratoDesarrolloWebContent} />;
@@ -118,6 +131,7 @@ const App: React.FC = () => {
             <Footer />
             <WhatsAppButton />
             <Chatbot />
+            <CookieBanner />
         </div>
     );
 };

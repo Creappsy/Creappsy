@@ -40,7 +40,8 @@ const PortfolioPage: React.FC = () => {
 
     useEffect(() => {
         if (gridRef.current) {
-            anime({
+            // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+            (anime as any)({
                 targets: gridRef.current.children,
                 translateY: [50, 0],
                 opacity: [0, 1],

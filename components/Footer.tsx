@@ -42,14 +42,18 @@ const Footer: React.FC = () => {
                         <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase">Empresa</h3>
                         <ul className="mt-4 space-y-3">
                             <li><a href="/nosotros" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Sobre Nosotros</a></li>
+                            <li><a href="/portafolio" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Portafolio</a></li>
+                            <li><a href="/precios" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Precios</a></li>
                             <li><a href="/blog" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Blog</a></li>
-                            <li><a href="/nosotros#equipo" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Equipo</a></li>
+                             <li><a href="/contacto" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Contacto</a></li>
                             <li><a href="/carreras" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Carreras</a></li>
+                            <li><a href="/prensa" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Prensa</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-sm font-semibold text-slate-300 tracking-wider uppercase">Legal</h3>
                         <ul className="mt-4 space-y-3">
+                            <li><a href="/aviso-legal" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Aviso Legal</a></li>
                             <li><a href="/aviso-de-privacidad" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Aviso de Privacidad</a></li>
                             <li><a href="/terminos-de-servicio" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Términos de Servicio</a></li>
                             <li><a href="/politica-de-cookies" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Política de Cookies</a></li>

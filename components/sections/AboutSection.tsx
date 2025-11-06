@@ -13,7 +13,8 @@ const AboutSection: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const tl = anime.timeline({ easing: 'easeOutExpo' });
+            // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+            const tl = (anime as any).timeline({ easing: 'easeOutExpo' });
             tl.add({
               targets: '#about-text-content',
               translateX: [-50, 0],
@@ -56,7 +57,7 @@ const AboutSection: React.FC = () => {
             Creemos en la colaboración estrecha con nuestros clientes para entender a fondo sus necesidades y transformar sus visiones en una realidad digital exitosa. Combinamos estrategia, diseño y tecnología para construir puentes sólidos entre tu marca y tu audiencia.
           </p>
           <div className="mt-8">
-              <a href="/nosotros" className="inline-block px-6 py-3 text-base font-medium text-center text-white bg-slate-700 rounded-md hover:bg-slate-600 transition-colors duration-300">
+              <a href="/nuestra-historia" className="inline-block px-6 py-3 text-base font-medium text-center text-white bg-slate-700 rounded-md hover:bg-slate-600 transition-colors duration-300">
                   Conoce nuestra historia
               </a>
           </div>

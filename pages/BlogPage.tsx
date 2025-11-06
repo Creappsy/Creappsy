@@ -22,7 +22,8 @@ const BlogPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const tlHero = anime.timeline({ easing: 'easeOutExpo' });
+    // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+    const tlHero = (anime as any).timeline({ easing: 'easeOutExpo' });
     tlHero.add({
         targets: "#blog-hero h1",
         translateY: [30, 0],
@@ -38,7 +39,8 @@ const BlogPage: React.FC = () => {
 
   useEffect(() => {
     if (gridRef.current) {
-        anime({
+        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+        (anime as any)({
             targets: gridRef.current.children,
             translateY: [50, 0],
             opacity: [0, 1],

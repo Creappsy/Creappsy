@@ -33,7 +33,8 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ title, subtitle, 
     };
 
     useEffect(() => {
-        anime({
+        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+        (anime as any)({
             targets: "#service-hero > div > *",
             translateY: [30, 0],
             opacity: [0, 1],
@@ -46,7 +47,8 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ title, subtitle, 
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const targets = entry.target.querySelectorAll('.section-title-services, .related-project-card, .process-step');
-                     anime({
+                     // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                     (anime as any)({
                         targets: targets,
                         translateY: [50, 0],
                         opacity: [0, 1],

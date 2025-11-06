@@ -64,6 +64,8 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose }) => 
 
   if (!project) return null;
 
+  const highResImageUrl = project.imageUrl.replace('800/600', '1200/900');
+
   return (
     <div 
       className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in"
@@ -77,7 +79,7 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose }) => 
         onClick={handleModalContentClick}
       >
         <div className="md:w-1/2">
-          <img src={project.imageUrl.replace('/600/400', '/800/600')} alt={project.title} className="w-full h-64 md:h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none" />
+          <img src={highResImageUrl} alt={project.title} className="w-full h-64 md:h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none" />
         </div>
         <div className="md:w-1/2 p-8 flex flex-col">
           <div className="flex justify-between items-start">

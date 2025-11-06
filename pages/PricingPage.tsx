@@ -57,7 +57,8 @@ const PricingPage: React.FC = () => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (entry.target.id === 'pricing-plans') {
-                        anime({
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({
                             targets: '.pricing-tier-page',
                             translateY: [50, 0],
                             opacity: [0, 1],
@@ -67,7 +68,8 @@ const PricingPage: React.FC = () => {
                         });
                     }
                     if (entry.target.id === 'pricing-faq') {
-                        anime({
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({
                             targets: '.faq-item',
                             translateY: [30, 0],
                             opacity: [0, 1],

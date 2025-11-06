@@ -5,7 +5,8 @@ import ParticleBackground from '../ParticleBackground';
 
 const HomeSection: React.FC = () => {
   useEffect(() => {
-    const tl = anime.timeline({
+    // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+    const tl = (anime as any).timeline({
       easing: 'easeOutExpo',
     });
 
@@ -44,7 +45,7 @@ const HomeSection: React.FC = () => {
           <a href="/portafolio" className="inline-block w-full sm:w-auto px-8 py-3 text-base font-medium text-center text-white bg-gradient-to-r from-purple-600 to-cyan-500 rounded-md shadow-lg hover:from-purple-700 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105">
             Ver Proyectos
           </a>
-          <a href="/contacto" className="inline-block w-full sm:w-auto px-8 py-3 text-base font-medium text-center text-cyan-300 bg-slate-800/50 border border-slate-700 rounded-md hover:bg-slate-800 transition-colors duration-300">
+          <a href="/hablemos" className="inline-block w-full sm:w-auto px-8 py-3 text-base font-medium text-center text-cyan-300 bg-slate-800/50 border border-slate-700 rounded-md hover:bg-slate-800 transition-colors duration-300">
             Hablemos
           </a>
         </div>

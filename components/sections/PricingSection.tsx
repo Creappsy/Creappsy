@@ -53,7 +53,8 @@ const PricingSection: React.FC = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          anime({
+          // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+          (anime as any)({
             targets: '.pricing-tier',
             translateY: [50, 0],
             opacity: [0, 1],

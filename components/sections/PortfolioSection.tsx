@@ -11,6 +11,13 @@ const SearchIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
+const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.432 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+);
+
 const PortfolioSection: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -22,7 +29,8 @@ const PortfolioSection: React.FC = () => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const tl = anime.timeline({
+                // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                const tl = (anime as any).timeline({
                     easing: 'easeOutExpo',
                     duration: 800
                 });
@@ -66,7 +74,10 @@ const PortfolioSection: React.FC = () => {
     <>
       <Section ref={sectionRef} id="portfolio" className="bg-slate-950/50">
         <div className="text-center portfolio-title">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Nuestro Trabajo</h2>
+          <div className="flex justify-center items-center gap-x-3">
+              <EyeIcon className="h-8 w-8 text-purple-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Nuestro Trabajo</h2>
+          </div>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
             Estamos orgullosos de los proyectos que hemos realizado. Aquí hay una selección de nuestro trabajo reciente.
           </p>

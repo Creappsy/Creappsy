@@ -5,7 +5,7 @@ import anime from 'animejs';
 
 const MailIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
   </svg>
 );
 
@@ -13,6 +13,11 @@ const WhatsAppIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg fill="currentColor" viewBox="0 0 24 24" {...props}><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.487 5.235 3.487 8.413 0 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.655 4.398 1.908 6.161l.119.198-1.015 3.698 3.75-1.001.185.116z" /></svg>
 );
 
+const ChatBubbleLeftRightIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193l-3.72 3.72a.75.75 0 01-1.06 0l-3.72-3.72C9.347 17.1 8.5 16.136 8.5 15v-4.286c0-.97.616-1.813 1.5-2.097m6.5 0v3.375c0 .621.504 1.125 1.125 1.125h3.375m-1.94-4.594a.75.75 0 10-1.06-1.06L13.5 6.25l-1.06-1.06a.75.75 0 00-1.06 1.06l1.06 1.06-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06 1.06 1.06a.75.75 0 001.06-1.06l-1.06-1.06zM3.75 14.25c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193l-3.72 3.72a.75.75 0 01-1.06 0L.27 22.75A1.966 1.966 0 010 21.25v-4.286c0-.97.616-1.813 1.5-2.097m6.5 0v3.375c0 .621.504 1.125 1.125 1.125h3.375" />
+    </svg>
+);
 
 const ContactSection: React.FC = () => {
     const sectionRef = useRef<HTMLElement>(null);
@@ -36,7 +41,8 @@ const ContactSection: React.FC = () => {
 
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
-                anime({
+                // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                (anime as any)({
                     targets: section.querySelectorAll('.contact-title > *'),
                     translateY: [40, 0],
                     opacity: [0, 1],
@@ -125,7 +131,10 @@ const ContactSection: React.FC = () => {
     return (
         <Section ref={sectionRef} id="contact">
             <div className="max-w-3xl mx-auto text-center contact-title">
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Hablemos de tu Proyecto</h2>
+                <div className="flex justify-center items-center gap-x-3">
+                    <ChatBubbleLeftRightIcon className="h-8 w-8 text-emerald-400" />
+                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Hablemos de tu Proyecto</h2>
+                </div>
                 <p className="mt-4 text-lg text-slate-400">
                     ¿Listo para empezar? Elige tu método de contacto preferido o completa el formulario. Estamos aquí para ayudarte a convertir tu visión en realidad.
                 </p>

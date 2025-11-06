@@ -62,7 +62,8 @@ const NosotrosPage: React.FC = () => {
     const sectionsRef = useRef<HTMLElement[]>([]);
 
     useEffect(() => {
-        const tlHero = anime.timeline({ easing: 'easeOutExpo' });
+        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+        const tlHero = (anime as any).timeline({ easing: 'easeOutExpo' });
         tlHero.add({
             targets: "#nosotros-hero h1",
             translateY: [30, 0],
@@ -80,16 +81,22 @@ const NosotrosPage: React.FC = () => {
                 if (entry.isIntersecting) {
                     const sectionId = entry.target.id;
                     if (sectionId === 'nuestra-historia') {
-                        anime({ targets: "#historia-img", opacity: [0, 1], scale: [0.9, 1], duration: 1000, easing: 'easeOutExpo' });
-                        anime({ targets: "#historia-text > *", translateY: [40, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({ targets: "#historia-img", opacity: [0, 1], scale: [0.9, 1], duration: 1000, easing: 'easeOutExpo' });
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({ targets: "#historia-text > *", translateY: [40, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
                     } else if (sectionId === 'nuestros-valores') {
-                        anime({ targets: ".value-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({ targets: ".value-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
                     } else if (sectionId === 'testimonials') {
-                        anime({ targets: ".testimonial-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({ targets: ".testimonial-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(200), duration: 800, easing: 'easeOutExpo' });
                     } else if (sectionId === 'equipo') {
-                        anime({ targets: ".team-member-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(150), duration: 800, easing: 'easeOutExpo' });
+                        // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                        (anime as any)({ targets: ".team-member-card", translateY: [50, 0], opacity: [0, 1], delay: anime.stagger(150), duration: 800, easing: 'easeOutExpo' });
                     }
-                     anime({
+                     // FIX: Cast to 'any' to bypass incorrect type definitions for animejs.
+                     (anime as any)({
                         targets: entry.target.querySelectorAll('.section-title > *'),
                         translateY: [40, 0],
                         opacity: [0, 1],
@@ -134,7 +141,7 @@ const NosotrosPage: React.FC = () => {
             <Section ref={addSectionRef} id="nuestra-historia">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div id="historia-img">
-                        <img src="https://picsum.photos/seed/nuestra-historia/800/600" alt="Equipo de Creappsy colaborando" className="rounded-lg shadow-2xl"/>
+                        <img src="https://picsum.photos/seed/creappsy-team/800/600" alt="Equipo de Creappsy colaborando" className="rounded-lg shadow-2xl"/>
                     </div>
                     <div id="historia-text">
                         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">Nuestra Historia</h2>
@@ -144,6 +151,11 @@ const NosotrosPage: React.FC = () => {
                         <p className="mt-4 text-slate-400">
                             A través de los años, hemos crecido y evolucionado, pero nuestro ADN sigue siendo el mismo: una curiosidad insaciable, un compromiso con la excelencia y un deseo genuino de ver a nuestros clientes triunfar.
                         </p>
+                        <div className="mt-6">
+                            <a href="/nuestra-historia" className="inline-block px-6 py-3 text-base font-medium text-center text-white bg-slate-700 rounded-md hover:bg-slate-600 transition-colors duration-300">
+                                Conoce la historia completa
+                            </a>
+                        </div>
                     </div>
                 </div>
             </Section>
